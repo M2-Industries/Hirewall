@@ -1,3 +1,12 @@
+# DS Store
+.DS_Store
+
+# Lib directory
+lib/
+
+# Package Lock JSON
+package-lock.json
+
 # Logs
 logs
 *.log
