@@ -11,16 +11,16 @@ type userControllerType = {
 const SALT_WORK_FACTOR: number = 15;
 const userController: userControllerType = {
   validateNewUser(req, res, next) {
-    if (!req.body.username || !req.body.password) {
-      // if missing username or password, return error
-      return next({ error: 'Please provide username and password' });
+    if (!req.body.email || !req.body.password) {
+      // if missing email or password, return error
+      return next({ error: 'Please provide email and password' });
     } else {
-      const { username } = req.body;
-      db.query('SELECT * FROM users WHERE username = $1', [username])
+      const { email } = req.body;
+      db.query('SELECT * FROM users WHERE email = $1', [email])
         .then((result) => {
           // if user already exists, return error
           if (result.rows[0])
-            return next({ log: 'error: username already exists' });
+            return next({ log: 'error: email already exists' });
           // if valid, continue to createNewUser
           else {
             return next();
@@ -28,7 +28,7 @@ const userController: userControllerType = {
         })
         .catch((err: Error) => {
           return next({
-            log: 'DB error while checking for duplicate username in userController.validateNewUser',
+            log: 'DB error while checking for duplicate email in userController.validateNewUser',
             error: err,
           });
         });
@@ -36,7 +36,7 @@ const userController: userControllerType = {
   },
 
   createNewUser(req: Request, res: Response, next: NextFunction) {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     // hash password to store in DB
     bcrypt.hash(password, 15, (err: Error, hashedPassword: string) => {
       // on bcrypt error, return error
@@ -47,8 +47,8 @@ const userController: userControllerType = {
         });
       // if bcrypt succeeds, create new user in database
       db.query(
-        'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING _id',
-        [username, hashedPassword]
+        'INSERT INTO users (email, password) VALUES ($1, $2) RETURNING _id',
+        [email, hashedPassword]
       )
         .then((result) => {
           res.locals.userId = result.rows[0];
@@ -56,7 +56,7 @@ const userController: userControllerType = {
         })
         .catch((err: Error) => {
           return next({
-            log: 'DB error while checking for duplicate username in userController.validateNewUser',
+            log: 'DB error while checking for duplicate email in userController.validateNewUser',
             error: err,
           });
         });
@@ -64,11 +64,11 @@ const userController: userControllerType = {
   },
 
   authenticateUser(req: Request, res: Response, next: NextFunction) {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     let hashedPassword: string = '';
     let userId: number = 0;
     // get hashed password from DB
-    db.query('SELECT password, _id FROM users WHERE username = $1', [username])
+    db.query('SELECT password, _id FROM users WHERE email = $1', [email])
       .then((result) => {
         // if valid response, save hashedPassword and userID
         if (result.rows[0]) {
@@ -86,9 +86,11 @@ const userController: userControllerType = {
           }
           // otherwise, return error
           else {
-            return next({ log: 'error: incorrect username or password' });
+            return next({ log: 'error: incorrect email or password' });
           }
         })
       );
   },
 };
+
+module.exports = userController;
