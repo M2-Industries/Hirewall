@@ -13,14 +13,26 @@ const userController: userControllerType = {
   validateNewUser(req, res, next) {
     if (!req.body.email || !req.body.password) {
       // if missing email or password, return error
-      return next({ error: 'Please provide email and password' });
+      return next({
+        log: 'Error in userController.validateNewUser - email or password not provided',
+        status: 400,
+        message: {
+          err: 'Please provide email and password.',
+        },
+      });
     } else {
       const { email } = req.body;
       db.query('SELECT * FROM users WHERE email = $1', [email])
         .then((result) => {
           // if user already exists, return error
           if (result.rows[0])
-            return next({ log: 'error: email already exists' });
+            return next({
+              log: 'Error in userController.validateNewUser - user with that email already exists',
+              status: 409,
+              message: {
+                err: 'Account with that email address already exists.',
+              },
+            });
           // if valid, continue to createNewUser
           else {
             return next();
@@ -29,7 +41,10 @@ const userController: userControllerType = {
         .catch((err: Error) => {
           return next({
             log: 'DB error while checking for duplicate email in userController.validateNewUser',
-            error: err,
+            status: 503,
+            message: {
+              err: 'Database connection error, please try again later.',
+            },
           });
         });
     }
@@ -42,8 +57,11 @@ const userController: userControllerType = {
       // on bcrypt error, return error
       if (err)
         return next({
-          log: 'error hashing password in userController.createNewUser',
-          error: err,
+          log: 'Error hashing password in userController.createNewUser',
+          status: 500,
+          message: {
+            err: 'Internal servor error, please try again later.',
+          },
         });
       // if bcrypt succeeds, create new user in database
       db.query(
@@ -56,8 +74,11 @@ const userController: userControllerType = {
         })
         .catch((err: Error) => {
           return next({
-            log: 'DB error while checking for duplicate email in userController.validateNewUser',
-            error: err,
+            log: 'DB error while checking for duplicate email in userController.createNewUser',
+            status: 503,
+            message: {
+              err: 'Database connection error, please try again later.',
+            },
           });
         });
     });
@@ -86,7 +107,13 @@ const userController: userControllerType = {
           }
           // otherwise, return error
           else {
-            return next({ log: 'error: incorrect email or password' });
+            return next({
+              log: 'error in userController.authenticateUser: password does not match',
+              status: 401,
+              message: {
+                err: 'Incorrect email or password.',
+              },
+            });
           }
         })
       );
