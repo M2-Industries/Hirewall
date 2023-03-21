@@ -1,0 +1,20 @@
+.icon {
+  width: 4rem;
+  margin-right: 1rem;
+}
+
+.searchContainer {
+  margin-top: 1rem;
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+
+.searchBar {
+  :focus {
+    border-radius: 0.5rem;
+    border: solid;
+    border-width: 0.1rem;
+    border-color: gray;
+  }
+}
