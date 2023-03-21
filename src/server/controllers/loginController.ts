@@ -69,19 +69,22 @@ const loginController: loginControllerType = {
     // get hashed password from DB
     db.query('SELECT password, _id FROM users WHERE username = $1', [username])
       .then((result) => {
+        // if valid response, save hashedPassword and userID
         if (result.rows[0]) {
           hashedPassword = result.rows[0].password;
           userId = result.rows[0]._id;
-        } else {
-          return next({ log: 'error: incorrect username or password' });
         }
       })
+      // check if password matches
       .then(
         bcrypt.compare(password, hashedPassword, (isMatch: boolean) => {
+          // if yes, return userId
           if (isMatch) {
             res.locals.userId = userId;
             return next();
-          } else {
+          }
+          // otherwise, return error
+          else {
             return next({ log: 'error: incorrect username or password' });
           }
         })
