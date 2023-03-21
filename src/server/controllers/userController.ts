@@ -1,14 +1,15 @@
 const bcrypt = require('bcryptjs');
 import { Request, Response, NextFunction } from 'express';
+const db = require('../models/dbmodel');
 
-type loginControllerType = {
+type userControllerType = {
   validateNewUser: (req: Request, res: Response, next: NextFunction) => void;
   createNewUser: (req: Request, res: Response, next: NextFunction) => void;
   authenticateUser: (req: Request, res: Response, next: NextFunction) => void;
 };
 
 const SALT_WORK_FACTOR: number = 15;
-const loginController: loginControllerType = {
+const userController: userControllerType = {
   validateNewUser(req, res, next) {
     if (!req.body.username || !req.body.password) {
       // if missing username or password, return error
@@ -27,7 +28,7 @@ const loginController: loginControllerType = {
         })
         .catch((err: Error) => {
           return next({
-            log: 'DB error while checking for duplicate username in loginController.validateNewUser',
+            log: 'DB error while checking for duplicate username in userController.validateNewUser',
             error: err,
           });
         });
@@ -41,7 +42,7 @@ const loginController: loginControllerType = {
       // on bcrypt error, return error
       if (err)
         return next({
-          log: 'error hashing password in loginController.createNewUser',
+          log: 'error hashing password in userController.createNewUser',
           error: err,
         });
       // if bcrypt succeeds, create new user in database
@@ -55,7 +56,7 @@ const loginController: loginControllerType = {
         })
         .catch((err: Error) => {
           return next({
-            log: 'DB error while checking for duplicate username in loginController.validateNewUser',
+            log: 'DB error while checking for duplicate username in userController.validateNewUser',
             error: err,
           });
         });
