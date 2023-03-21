@@ -1,4 +1,6 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import connection from './models/dbmodel';
+// import db from '.models/dbmodel.ts';
 // import cors from 'cors';
 // import clusterRouter from './routes/cluster';
 // import grafanaRouter from './routes/grafana';
@@ -13,7 +15,14 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 //   message: { err: string };
 // }
 
-
+//connect method not being called when in dbmodel.ts (fix later)
+connection.connect((err: any) => {
+  if (err) {
+    console.error('Error connecting to MySQL database: ', err);
+  } else {
+    console.log('Connected to MySQL database!');
+  }
+});
 const app: Application = express();
 const PORT: number = 3000;
 
