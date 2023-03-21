@@ -79,9 +79,9 @@ const userController: userControllerType = {
       // check if password matches
       .then(
         bcrypt.compare(password, hashedPassword, (isMatch: boolean) => {
-          // if yes, return userId
+          // if yes, add user id to res.locals and continue
           if (isMatch) {
-            res.locals.userId = userId;
+            res.locals._id = userId;
             return next();
           }
           // otherwise, return error
