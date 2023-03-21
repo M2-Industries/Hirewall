@@ -1,8 +1,18 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import * as path from 'path';
 import cors from 'cors';
+import connection from './models/dbmodel';
 const app: Application = express();
 const PORT: number = 3000;
+
+//connect method not being called when in dbmodel.ts (fix later)
+connection.connect((err: any) => {
+  if (err) {
+    console.error('Error connecting to MySQL database: ', err);
+  } else {
+    console.log('Connected to MySQL database!');
+  }
+});
 
 //Define the error object type to use
 type ServerError = {
@@ -13,7 +23,7 @@ type ServerError = {
 
 //parse incoming requests to json
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // statically serve everything in the build folder on the route '/build'
@@ -23,16 +33,6 @@ app.use('/', express.static(path.join(__dirname, '../dist')));
 app.get('/', (req, res) => {
   return res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
 });
-
-// app.use('/setup', setupRouter);
-// app.use('/clusterdata', clusterRouter);
-// app.use('/grafana', grafanaRouter);
-
-// app.use('/alerts', alertsRouter);
-
-// // catch all
-
-// // global err handler
 
 //404 catch all error handler
 app.use('/**', (req, res) => res.status(404).send('file not found'));
