@@ -17,7 +17,7 @@ export default function FilterButton() {
   const handleMouseOver: MouseEventHandler<HTMLElement> = (event) => {
     setVariant('outlined');
   };
-  const handleBlur: MouseEventHandler<HTMLElement> = (event) => {
+  const handleMouseOut: MouseEventHandler<HTMLElement> = (event) => {
     setVariant('text');
   };
   return (
@@ -27,7 +27,7 @@ export default function FilterButton() {
         size='large'
         onClick={handleButtonClick}
         onMouseOver={handleMouseOver}
-        onMouseOut={handleBlur}
+        onMouseOut={handleMouseOut}
         sx={{ minWidth: '10rem' }}
       >
         {filter === 'All' ? 'Active' : 'All'}
