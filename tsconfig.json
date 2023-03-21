@@ -20,5 +20,5 @@
     "outDir": "./dist",
     "declarationDir": "./dist"
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "src/server/models/dbmodel.ts"],
 }

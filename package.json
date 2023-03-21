@@ -25,8 +25,11 @@
   },
   "homepage": "https://github.com/M2-Industries/Hirewall#readme",
   "dependencies": {
+    "@types/mysql": "^2.15.21",
     "express": "^4.18.2",
     "file-loader": "^6.2.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.2.0",
     "nodemon": "^2.0.21",
     "path": "^0.12.7",
     "react": "^18.2.0",
