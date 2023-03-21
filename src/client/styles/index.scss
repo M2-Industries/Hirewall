@@ -11,10 +11,21 @@
 }
 
 .searchBar {
+  :hover {
+    border-radius: 0.5rem;
+    border: solid;
+    border-width: 0.1rem;
+    border-color: gray;
+  }
   :focus {
     border-radius: 0.5rem;
     border: solid;
     border-width: 0.1rem;
     border-color: gray;
   }
+}
+
+.filterButton {
+  display: flex;
+  justify-content: center;
 }
