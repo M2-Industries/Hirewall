@@ -13,8 +13,11 @@ export default function ViewButton() {
   const view = useSelector((state: HireWallState) => state.selectedView);
   function handleButtonClick(e: MouseEvent<HTMLElement>) {
     e.preventDefault();
-    navigate(view === 'Card' ? '/table' : '/card');
-    dispatch(setSelectedView(view === 'Card' ? 'Table' : 'Card'));
+    dispatch(
+      setSelectedView(
+        view === 'Card' ? 'Table' : view === 'Table' ? 'Graph' : 'Card'
+      )
+    );
   }
   const handleMouseOver: MouseEventHandler<HTMLElement> = (event) => {
     setVariant('contained');
@@ -32,7 +35,7 @@ export default function ViewButton() {
         onMouseOut={handleMouseOut}
         sx={{ minWidth: '10rem' }}
       >
-        {view === 'Card' ? 'Table' : 'Card'}
+        {view === 'Card' ? 'Table' : view === 'Table' ? 'Graph' : 'Card'}
       </Button>
     </div>
   );

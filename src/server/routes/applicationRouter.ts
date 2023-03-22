@@ -1,37 +1,46 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import applicationController from '../controllers/applicationController';
 const applicationRouter = express.Router();
 // import application controller when it's done
 
 // get all applications
-applicationRouter.get('/',
+applicationRouter.get(
+  '/:user_id',
+  applicationController.getApplications,
   // invoke the middleware function for getting all applications
   (req: Request, res: Response) => {
-    return res.status(200).json(res.locals.allApps)
+    return res.status(200).json(res.locals.allApps);
   }
-)
+);
 
 // create an application
-applicationRouter.post('/',
+applicationRouter.post(
+  '/',
+  applicationController.createApplication,
   // invoke the middleware function for creating an application
   (req: Request, res: Response) => {
-    return res.status(201).json(res.locals.newApp)
+    return res.status(201).json(res.locals.newApp);
   }
-)
+);
 
 // delete an application
-applicationRouter.delete('/:id',
+applicationRouter.delete(
+  '/:application_id',
+  applicationController.deleteApplication,
   // invoke the middleware function for deleting an application
   (req: Request, res: Response) => {
     return res.status(204);
   }
-)
+);
 
 // edit an application
-applicationRouter.patch('/:id',
+applicationRouter.patch(
+  '/:application_id',
+  applicationController.updateApplication,
   // invoke the middleware function for updating an application
   (req: Request, res: Response) => {
-    return res.status(200).json(res.locals.updatedApp)
+    return res.status(200).json(res.locals.updatedApp);
   }
-)
+);
 
-export default applicationRouter
+export default applicationRouter;
