@@ -34,49 +34,52 @@ export default function SignIn() {
   };
 
   return (
-    <Container maxWidth='xs'>
-      <Box
-        sx={{
-          mt: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component='h1' variant='h4' sx={{ mb: 3 }}>
-          Sign In{' '}
-        </Typography>
-        <Box component='form' onSubmit={handleSubmit} noValidate>
-          <TextField
-            variant='standard'
-            margin='dense'
-            required
-            fullWidth
-            id='email'
-            label='Email'
-            name='email'
-            type='text'
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              dispatch(setUserRecord(e.target.value))
-            }
-            autoFocus
-          />
-          <TextField
-            variant='standard'
-            margin='dense'
-            required
-            fullWidth
-            id='password'
-            label='Password'
-            name='password'
-            type='password'
-          />
-          <Button type='submit' variant='contained' sx={{ mt: 4, mb: 4 }}>
-            Sign In
-          </Button>
+    <div>
+      <NavBar />
+      <Container maxWidth='xs'>
+        <Box
+          sx={{
+            mt: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography component='h1' variant='h4' sx={{ mb: 3 }}>
+            Sign In{' '}
+          </Typography>
+          <Box component='form' onSubmit={handleSubmit} noValidate>
+            <TextField
+              variant='standard'
+              margin='dense'
+              required
+              fullWidth
+              id='email'
+              label='Email'
+              name='email'
+              type='text'
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                dispatch(setUserRecord(e.target.value))
+              }
+              autoFocus
+            />
+            <TextField
+              variant='standard'
+              margin='dense'
+              required
+              fullWidth
+              id='password'
+              label='Password'
+              name='password'
+              type='password'
+            />
+            <Button type='submit' variant='contained' sx={{ mt: 4, mb: 4 }}>
+              Sign In
+            </Button>
+          </Box>
+          <Link to='/signup'>{'New to Hirewall? Create an account'}</Link>
         </Box>
-        <Link to='/signup'>{'New to Hirewall? Create an account'}</Link>
-      </Box>
-    </Container>
+      </Container>
+    </div>
   );
 }
