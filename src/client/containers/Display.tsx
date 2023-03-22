@@ -60,10 +60,10 @@ function Display() {
       .catch((err) => console.log(err));
   }, [view]);
   return (
-    <div id='display'>
+    <div id="display">
       <NavBar />
       <SearchBar />
-      <div className='selectorButtons'>
+      <div className="selectorButtons">
         <FilterButton />
         <ViewButton />
       </div>
