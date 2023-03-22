@@ -4,7 +4,8 @@ export type HireWallState = {
   isLoggedIn: boolean;
   userRecord: { _id: number; name: string; email: string }; // mimics the DB structure
   selectedView: 'Card' | 'Table' | 'Graph';
-  selectedFilter: 'All' | 'Active' | 'Inactive';
+  selectedFilter: FilterType;
+  searchTerm: string;
   applicationRecords?: { [key: number]: ApplicationRecord };
   actionRecords?: {
     [key: number]: ActionRecord[];
@@ -31,6 +32,7 @@ export type ActionRecord = {
   application_id_fk?: number;
 };
 export type ActionType =
+  | 'Created'
   | 'Applied'
   | 'Rejected'
   | 'Sent Follow Up'
@@ -43,75 +45,88 @@ export type ActionType =
   | 'No Offer'
   | 'Withdrawn';
 
-export type FilterType = 'Active' | 'All';
+export type FilterType = 'Active' | 'Inactive' | 'All';
 
 const initialState: HireWallState = {
   isLoggedIn: false,
   userRecord: { _id: 0, name: '', email: '' }, // mimics the DB structure
   selectedView: 'Card', // can be 'Card', 'Table', 'Graph' (growth)
   selectedFilter: 'All', // can be Active or All
-  applicationRecords: [
-    {
+  searchTerm: '',
+  applicationRecords: {
+    0: {
       _id: 0,
       company: 'M2-Industries',
       location: 'New York, NY',
       job_title: 'Sr. Software Engineer',
       salary: '$200,000', //[90000, 220000], // will need to parse to a number assume USD
       comments: 'Some String',
-      last_action_id_fk: 1, // points to ActionRecords[_id].[lastActionId]
+      last_action_id_fk: 2, // points to ActionRecords[_id].[lastActionId]
     },
-    {
+    1: {
       _id: 1,
       company: 'Amazon',
       location: 'New York, NY',
       job_title: 'Sr. Software Engineer',
       salary: '$250,000', //[90000, 220000], // will need to parse to a number assume USD
       comments: 'Used resume version 4 with Cover Letter',
-      last_action_id_fk: 1, // points to ActionRecords[_id].[lastActionId]
+      last_action_id_fk: 5, // points to ActionRecords[_id].[lastActionId]
     },
-    {
+    2: {
       _id: 2,
       company: 'Bloomberg',
       location: 'Jersey City, NJ',
       job_title: 'Software Engineer',
       salary: '$350,000', //[90000, 220000], // will need to parse to a number assume USD
       comments: 'Used resume version 5 with Cover Letter',
-      last_action_id_fk: 3, // points to ActionRecords[_id].[lastActionId]
+      last_action_id_fk: 10, // points to ActionRecords[_id].[lastActionId]
     },
-  ],
+    3: {
+      _id: 3,
+      company: 'Acme',
+      location: 'Sun City, CA',
+      job_title: 'Software Engineer',
+      salary: '$180,000', //[90000, 220000], // will need to parse to a number assume USD
+      comments: 'Used resume version 6 with Cover Letter',
+      last_action_id_fk: 15, // points to ActionRecords[_id].[lastActionId]
+    },
+  },
   actionRecords: {
     0: [
       // maps to applicationRecord element in the table by id
       {
         _id: 0,
         date: '12/22/21',
-        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        action_type: 'Created', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'applied today hoping for the best!',
       },
       {
         _id: 1,
+        date: '12/22/21',
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 2,
         date: '12/23/21',
         action_type: 'Sent Follow Up', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'Checked in with Evelyn, sent her peaches.',
+      },
+      {
+        _id: 2,
+        date: '2/23/22',
+        action_type: 'Interview', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'Checked in with Evelyn, sent her peaches.',
       },
     ],
     1: [
       // maps to applicationRecord element in the table by id
       {
-        _id: 2,
+        _id: 3,
         date: '3/22/21',
-        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        action_type: 'Created', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'applied today hoping for the best!',
       },
-      {
-        _id: 3,
-        date: '4/23/23',
-        action_type: 'Rejected', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
-        notes: 'They wanted 100 years experience',
-      },
-    ],
-    2: [
-      // maps to applicationRecord element in the table by id
       {
         _id: 4,
         date: '3/22/21',
@@ -121,7 +136,73 @@ const initialState: HireWallState = {
       {
         _id: 5,
         date: '4/23/23',
+        action_type: 'Rejected', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+    ],
+    2: [
+      // maps to applicationRecord element in the table by id
+      {
+        _id: 6,
+        date: '3/22/21',
+        action_type: 'Created', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 7,
+        date: '3/22/21',
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 8,
+        date: '4/23/23',
         action_type: 'Interview', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+      {
+        _id: 9,
+        date: '4/23/23',
+        action_type: 'Offer', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+      {
+        _id: 10,
+        date: '4/23/23',
+        action_type: 'Accepted', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+    ],
+    3: [
+      // maps to applicationRecord element in the table by id
+      {
+        _id: 11,
+        date: '3/22/21',
+        action_type: 'Created', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 12,
+        date: '3/22/21',
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 13,
+        date: '4/23/23',
+        action_type: 'Interview', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+      {
+        _id: 14,
+        date: '4/23/23',
+        action_type: 'Offer', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+      {
+        _id: 15,
+        date: '4/23/23',
+        action_type: 'Declined', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'They wanted 100 years experience',
       },
     ],
@@ -280,6 +361,9 @@ const hwSlice = createSlice({
         }
       }
     },
+    setSearchTerm: (state, action) => {
+      state.searchTerm = action.payload;
+    },
   },
 });
 
@@ -311,6 +395,7 @@ export const {
   setActionRecords,
   deleteActionRecord,
   deleteActionRecordElem,
+  setSearchTerm,
 } = hwSlice.actions;
 
 export default hwSlice.reducer;
