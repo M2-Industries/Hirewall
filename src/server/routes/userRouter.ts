@@ -27,7 +27,7 @@ userRouter.post(
   userController.createNewUser,
   cookieController.setCookie,
   (req: Request, res: Response) => {
-    return res.redirect('/dashboard');
+    return res.sendStatus(201);
   }
 );
 
@@ -37,7 +37,7 @@ userRouter.post(
   userController.authenticateUser,
   cookieController.setCookie,
   (req: Request, res: Response) => {
-    return res.redirect('/dashboard');
+    return res.sendStatus(202);
   }
 );
 
