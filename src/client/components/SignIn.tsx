@@ -10,10 +10,16 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const requestData = {
-      username: data.get('username'),
+      email: data.get('email'),
       password: data.get('password'),
     };
-    fetch('/login', { method: 'POST', body: JSON.stringify({ requestData }) });
+    fetch('/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
   };
 
   return (
@@ -33,9 +39,9 @@ export default function SignIn() {
             margin='dense'
             required
             fullWidth
-            id='username'
-            label='Username'
-            name='username'
+            id='email'
+            label='Email'
+            name='email'
             type='text'
             autoFocus
           />
