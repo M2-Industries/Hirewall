@@ -40,7 +40,9 @@ export default function NavBar() {
 
   const handleMenuClose = () => {
     if (isLoggedIn) {
-      dispatch(setIsLoggedIn(false));
+      fetch('/user/logout').then((res) => {
+        dispatch(setIsLoggedIn(false));
+      });
     }
     nav('/signin');
     setAnchorEl(null);
