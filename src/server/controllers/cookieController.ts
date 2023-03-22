@@ -27,30 +27,43 @@ const cookieController: cookieControllerType = {
   // verify JWT from session cookie
   verifyCookie(req: Request, res: Response, next: NextFunction) {
     // Check if session token exists
-    if (!req.cookies.sessionToken) {
-      return next({
-        log: 'Error in cookieController.verifyCookie (failed to extract cookie)',
-        status: 401,
-        message: { err: 'User is not authenticated.' },
-      });
-    }
-    // Decode token
-    const { sessionToken } = req.cookies;
-    jwt.verify(sessionToken, secret, (err: Error, decoded: { _id: number }) => {
-      // if verification fails, return error
-      if (err) {
+    try {
+      if (!req.cookies.sessionToken) {
         return next({
-          log: 'Error in cookieController.verifyCookie (failed to verify token)',
+          log: 'Error in cookieController.verifyCookie (failed to extract cookie)',
           status: 401,
           message: { err: 'User is not authenticated.' },
         });
       }
-      // if verification succeeds, add ID to res.locals and continue
-      else {
-        res.locals._id = decoded._id;
-        return next();
-      }
-    });
+      // Decode token
+      const { sessionToken } = req.cookies;
+      jwt.verify(
+        sessionToken,
+        secret,
+        (err: Error, decoded: { _id: number }) => {
+          // if verification fails, return error
+          if (err) {
+            return next({
+              log: 'Error in cookieController.verifyCookie (failed to verify token)',
+              status: 401,
+              message: { err: 'User is not authenticated.' },
+            });
+          }
+          // if verification succeeds, add ID to res.locals and continue
+          else {
+            res.locals._id = decoded._id;
+            return next();
+          }
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      return next({
+        log: 'Error in cookieController.verifyCookie (failed to verify token)',
+        status: 501,
+        message: { err: 'Server Side error.' },
+      });
+    }
   },
 
   // Clear JWT session cookie
@@ -61,4 +74,3 @@ const cookieController: cookieControllerType = {
 };
 
 module.exports = cookieController;
-

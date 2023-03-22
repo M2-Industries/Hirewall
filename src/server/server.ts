@@ -5,6 +5,7 @@ import connection from './models/dbmodel';
 import userRouter from './routes/userRouter';
 import applicationRouter from './routes/applicationRouter';
 import actionRouter from './routes/actionRouter';
+const cookieParser = require('cookie-parser');
 const app: Application = express();
 const PORT: number = 3000;
 
@@ -28,6 +29,7 @@ connection.connect((err: ServerError) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 // require routes
 app.use('/user', userRouter);
