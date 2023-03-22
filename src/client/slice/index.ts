@@ -217,8 +217,8 @@ const hwSlice = createSlice({
       state.isLoggedIn = action.payload === true; // must be a boolean
     },
     setUserRecord: (state, action) => {
-      const { _id, name, email } = action.payload; // assumes that the structure is in the DB
-      state.userRecord = { _id, name, email };
+      // const { _id, name, email } = action.payload; // assumes that the structure is in the DB
+      state.userRecord = { _id: 0, name: '', email: action.payload };
     },
     setSelectedView: (state, action) => {
       switch (action.payload) {
