@@ -10,10 +10,16 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const requestData = {
-      username: data.get('username'),
+      email: data.get('email'),
       password: data.get('password'),
     };
-    fetch('/signup', { method: 'POST', body: JSON.stringify({ requestData }) });
+    fetch('/user/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    });
   };
 
   return (
@@ -26,16 +32,16 @@ export default function SignUp() {
           alignItems: 'center',
         }}
       >
-        <h1>Sign Up</h1>
+        <h1>Create a New Account</h1>
         <Box component='form' onSubmit={handleSubmit} noValidate>
           <TextField
             variant='standard'
             margin='dense'
             required
             fullWidth
-            id='username'
-            label='Username'
-            name='username'
+            id='email'
+            label='Email'
+            name='email'
             type='text'
             autoFocus
           />
@@ -53,7 +59,9 @@ export default function SignUp() {
             Sign Up
           </Button>
         </Box>
-        <Link href='#/signup'>{'New to Hirewall? Create an account'}</Link>
+        <Link href='/#/signin'>
+          {'Already using Hirewall? Sign in to your account'}
+        </Link>
       </Box>
     </Container>
   );
