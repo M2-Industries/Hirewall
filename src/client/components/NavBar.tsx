@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,8 +13,16 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 const Icon = require('../../../public/HWIcon.svg').default;
+import { useSelector, useDispatch } from 'react-redux';
+import type { HireWallState, ApplicationRecord } from '../slice';
+import { setIsLoggedIn, setActionRecords } from '../slice';
 
 export default function NavBar() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const isLoggedIn = useSelector((state: HireWallState) => state.isLoggedIn);
+  const user = useSelector((state: HireWallState) => state.userRecord);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -31,6 +39,10 @@ export default function NavBar() {
   };
 
   const handleMenuClose = () => {
+    if (isLoggedIn) {
+      dispatch(setIsLoggedIn(false));
+    }
+    nav('/signin');
     setAnchorEl(null);
     handleMobileMenuClose();
   };
@@ -56,8 +68,9 @@ export default function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        {isLoggedIn ? 'Log Out' : 'Log In'}
+      </MenuItem>
     </Menu>
   );
 
@@ -78,15 +91,15 @@ export default function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      {/* <MenuItem>
         <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
           <Badge badgeContent={4} color='error'>
             <MailIcon />
           </Badge>
         </IconButton>
         <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
+      </MenuItem> */}
+      {/* <MenuItem>
         <IconButton
           size='large'
           aria-label='show 17 new notifications'
@@ -97,7 +110,7 @@ export default function NavBar() {
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size='large'
@@ -108,7 +121,7 @@ export default function NavBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>{!isLoggedIn ? '' : user.email}</p>
       </MenuItem>
     </Menu>
   );
@@ -138,7 +151,7 @@ export default function NavBar() {
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton
+            {/* <IconButton
               size='large'
               aria-label='show 4 new mails'
               color='inherit'
@@ -155,7 +168,7 @@ export default function NavBar() {
               <Badge badgeContent={17} color='error'>
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size='large'
               edge='end'
