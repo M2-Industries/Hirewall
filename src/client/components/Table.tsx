@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-const SIZE = 25;
+const SIZE = 10;
 const VISIBLE_FIELDS = [
   'Company',
   'Location',
@@ -149,10 +149,11 @@ const rows = [
     Comments: 'Used resume version 4 with Cover Letter',
   },
 ];
-
+// <Box sx={{ height: SIZE * 2 + 'rem', width: '100%' }}>
+//
 export default function Table() {
   return (
-    <Box sx={{ height: SIZE * 2 + 'rem', width: '100%' }}>
+    <div className='table'>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -167,6 +168,6 @@ export default function Table() {
         checkboxSelection
         disableRowSelectionOnClick
       />
-    </Box>
+    </div>
   );
 }

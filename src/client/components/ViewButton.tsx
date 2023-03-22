@@ -2,19 +2,19 @@ import React, { MouseEvent, MouseEventHandler } from 'react';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedFilter } from '../slice';
+import { setSelectedView } from '../slice';
 import type { HireWallState } from '../slice';
 
-export default function FilterButton() {
-  const [variant, setVariant] = useState<'text' | 'outlined'>('text');
+export default function ViewButton() {
+  const [variant, setVariant] = useState<'text' | 'contained'>('text');
   const dispatch = useDispatch();
-  const filter = useSelector((state: HireWallState) => state.selectedFilter);
+  const view = useSelector((state: HireWallState) => state.selectedView);
   function handleButtonClick(e: MouseEvent<HTMLElement>) {
     e.preventDefault();
-    dispatch(setSelectedFilter(filter === 'All' ? 'Active' : 'All'));
+    dispatch(setSelectedView(view === 'Card' ? 'Table' : 'Card'));
   }
   const handleMouseOver: MouseEventHandler<HTMLElement> = (event) => {
-    setVariant('outlined');
+    setVariant('contained');
   };
   const handleMouseOut: MouseEventHandler<HTMLElement> = (event) => {
     setVariant('text');
@@ -29,7 +29,7 @@ export default function FilterButton() {
         onMouseOut={handleMouseOut}
         sx={{ minWidth: '10rem' }}
       >
-        {filter === 'All' ? 'Active' : 'All'}
+        {view === 'Card' ? 'Table' : 'Card'}
       </Button>
     </div>
   );
