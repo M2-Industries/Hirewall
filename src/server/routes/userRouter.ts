@@ -24,7 +24,7 @@ const cookieController = require('../controllers/cookieController');
 userRouter.post(
   '/create',
   userController.validateNewUser,
-  // userController.createNewUser,
+  userController.createNewUser,
   cookieController.setCookie,
   (req: Request, res: Response) => {
     return res.redirect('/dashboard');
@@ -34,7 +34,7 @@ userRouter.post(
 // Log in existing user
 userRouter.post(
   '/login',
-  // userController.authenticateUser,
+  userController.authenticateUser,
   cookieController.setCookie,
   (req: Request, res: Response) => {
     return res.redirect('/dashboard');
