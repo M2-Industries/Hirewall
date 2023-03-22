@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type HireWallState = {
+export type HireWallState = {
   isLoggedIn: boolean;
   userRecord: { _id: number; name: string; email: string }; // mimics the DB structure
   selectedView: 'Card' | 'Table' | 'Graph';
@@ -11,7 +11,7 @@ type HireWallState = {
   };
 };
 
-type ApplicationRecord = {
+export type ApplicationRecord = {
   _id: number;
   Company: string;
   Location: string;
@@ -21,14 +21,14 @@ type ApplicationRecord = {
   lastActionId: number | null; // points to ActionRecords[_id].[lastActionId]
 };
 
-type ActionRecord = {
+export type ActionRecord = {
   _id: number;
   date: string;
   actionType: ActionType;
   // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
   notes: string;
 };
-type ActionType =
+export type ActionType =
   | 'Applied'
   | 'Rejected'
   | 'Sent Follow Up'
@@ -40,6 +40,8 @@ type ActionType =
   | 'Declined'
   | 'No Offer'
   | 'Withdrawn';
+
+export type FilterType = 'Active' | 'All';
 
 const initialState: HireWallState = {
   isLoggedIn: false,
@@ -88,11 +90,11 @@ const hwSlice = createSlice({
       state.userRecord = { _id, name, email };
     },
     setSelectedView: (state, action) => {
-      switch (action.payload.toLower()) {
-        case 'table':
+      switch (action.payload) {
+        case 'Table':
           state.selectedView = 'Table';
           break;
-        case 'graph':
+        case 'Graph':
           state.selectedView = 'Graph';
           break;
         default:
@@ -100,8 +102,8 @@ const hwSlice = createSlice({
       }
     },
     setSelectedFilter: (state, action) => {
-      switch (action.payload.toLower()) {
-        case 'active':
+      switch (action.payload) {
+        case 'Active':
           state.selectedFilter = 'Active';
           break;
         default:
@@ -245,7 +247,7 @@ function parseActionType(action_type: string): ActionType {
   }
 }
 
-const {
+export const {
   setIsLoggedIn,
   setUserRecord,
   setSelectedView,
