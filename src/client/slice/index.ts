@@ -246,6 +246,7 @@ const hwSlice = createSlice({
     },
     setApplicationRecords: (state, action) => {
       let results = {};
+      console.log(action.payload);
       for (const record of action.payload) {
         // assumes the payload is an array of records.
         const {

@@ -73,9 +73,11 @@ export default function SignIn() {
               name='password'
               type='password'
             />
-            <Button type='submit' variant='contained' sx={{ mt: 4, mb: 4 }}>
-              Sign In
-            </Button>
+            <div className='center'>
+              <Button type='submit' variant='contained' sx={{ mt: 4, mb: 4 }}>
+                Sign In
+              </Button>
+            </div>
           </Box>
           <Link to='/signup'>{'New to Hirewall? Create an account'}</Link>
         </Box>
