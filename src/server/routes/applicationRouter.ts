@@ -1,11 +1,14 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import applicationController from '../controllers/applicationController';
+// import cookieController from '../controllers/cookieController';
+const cookieController = require('../controllers/cookieController');
 const applicationRouter = express.Router();
 // import application controller when it's done
 
 // get all applications
 applicationRouter.get(
-  '/:user_id',
+  '/',
+  cookieController.verifyCookie,
   applicationController.getApplications,
   // invoke the middleware function for getting all applications
   (req: Request, res: Response) => {
