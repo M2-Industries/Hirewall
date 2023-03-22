@@ -9,7 +9,7 @@ type userControllerType = {
 };
 
 const SALT_WORK_FACTOR: number = 15;
-const userController: userControllerType = {
+const userController: userControllerType = { 
   validateNewUser(req, res, next) {
     if (req.body.email === undefined || req.body.password === undefined) {
       // if missing email or password, return error

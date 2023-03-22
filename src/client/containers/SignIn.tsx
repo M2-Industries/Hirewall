@@ -1,11 +1,14 @@
 import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 
 export default function SignIn() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -19,6 +22,11 @@ export default function SignIn() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestData),
+    }).then((response) => {
+      console.log(response.status);
+      if (response.status === 202) {
+        navigate('/dashboard');
+      }
     });
   };
 
@@ -26,13 +34,15 @@ export default function SignIn() {
     <Container maxWidth='xs'>
       <Box
         sx={{
-          marginTop: 8,
+          mt: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <h1>Sign In</h1>
+        <Typography component='h1' variant='h4' sx={{ mb: 3 }}>
+          Sign In{' '}
+        </Typography>
         <Box component='form' onSubmit={handleSubmit} noValidate>
           <TextField
             variant='standard'
@@ -59,7 +69,7 @@ export default function SignIn() {
             Sign In
           </Button>
         </Box>
-        <Link href='#/signup'>{'New to Hirewall? Create an account'}</Link>
+        <Link to='/signup'>{'New to Hirewall? Create an account'}</Link>
       </Box>
     </Container>
   );
