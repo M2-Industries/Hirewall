@@ -1,5 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 const userRouter = express.Router();
+const userController = require('../controllers/userController');
+const cookieController = require('../controllers/cookieController');
 // import action controller when it's done
 
 // // get all users (mainly for devs for testing purposes)
@@ -19,28 +21,34 @@ const userRouter = express.Router();
 // )
 
 // Create a new account
-userRouter.post('/create',
-  // invoke the middleware function for creating an action
+userRouter.post(
+  '/create',
+  userController.validateNewUser,
+  userController.createNewUser,
+  cookieController.setCookie,
   (req: Request, res: Response) => {
-    return res.status(201).json(res.locals.newUser)
+    return res.redirect('/dashboard');
   }
-)
+);
+
 // Log in existing user
-userRouter.post('/login',
-  // invoke the middleware function for creating an action
+userRouter.post(
+  '/login',
+  userController.authenticateUser,
+  cookieController.setCookie,
   (req: Request, res: Response) => {
-    return res.status(201).json()
+    return res.redirect('/dashboard');
   }
-)
+);
 
 // Log out user
-userRouter.get('/logout',
-  // invoke the middleware function for creating an action
+userRouter.get(
+  '/logout',
+  cookieController.removeCookie,
   (req: Request, res: Response) => {
-    return res.status(201).json()
+    return res.redirect('/');
   }
-)
-
+);
 // // delete an action (mainly for devs for testing purposes)
 // userRouter.delete('/:id',
 //   // invoke the middleware function for deleting an action
@@ -57,4 +65,4 @@ userRouter.get('/logout',
 //   }
 // )
 
-export default userRouter
+export default userRouter;
