@@ -39,3 +39,25 @@
 .table {
   height: 75vh;
 }
+
+.topCard {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bodyCard {
+  display: flex;
+  direction: column;
+  justify-content: center;
+}
+
+.cardDiv {
+  margin: 0.25rem;
+}
+
+.cardSection {
+  display: flex;
+  direction: rows;
+  justify-content: center;
+  flex-wrap: wrap;
+}
