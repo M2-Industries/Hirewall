@@ -44,9 +44,9 @@ userRouter.post(
 // Log out user
 userRouter.get(
   '/logout',
-  // invoke the middleware function for creating an action
+  cookieController.removeCookie,
   (req: Request, res: Response) => {
-    return res.status(201).json();
+    return res.redirect('/');
   }
 );
 // // delete an action (mainly for devs for testing purposes)
