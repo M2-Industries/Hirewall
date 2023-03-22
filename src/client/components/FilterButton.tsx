@@ -11,7 +11,11 @@ export default function FilterButton() {
   const filter = useSelector((state: HireWallState) => state.selectedFilter);
   function handleButtonClick(e: MouseEvent<HTMLElement>) {
     e.preventDefault();
-    dispatch(setSelectedFilter(filter === 'All' ? 'Active' : 'All'));
+    dispatch(
+      setSelectedFilter(
+        filter === 'All' ? 'Active' : filter === 'Active' ? 'Inactive' : 'All'
+      )
+    );
   }
   const handleMouseOver: MouseEventHandler<HTMLElement> = (event) => {
     setVariant('outlined');
@@ -29,7 +33,7 @@ export default function FilterButton() {
         onMouseOut={handleMouseOut}
         sx={{ minWidth: '10rem' }}
       >
-        {filter === 'All' ? 'Active' : 'All'}
+        {filter === 'All' ? 'Active' : filter === 'Active' ? 'Inactive' : 'All'}
       </Button>
     </div>
   );

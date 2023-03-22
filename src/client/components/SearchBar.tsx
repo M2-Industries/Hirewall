@@ -2,6 +2,9 @@ import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSearchTerm } from '../slice';
+import type { HireWallState } from '../slice';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -44,6 +47,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchBar() {
+  const dispatch = useDispatch();
+  const searchTerm = useSelector((state: HireWallState) => state.searchTerm);
   return (
     <div className='searchContainer'>
       <Search>
@@ -60,7 +65,11 @@ export default function SearchBar() {
           }}
           className='searchBar'
           placeholder='Search…'
+          value={searchTerm}
           inputProps={{ 'aria-label': 'search' }}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            dispatch(setSearchTerm(e.target.value))
+          }
         />
       </Search>
     </div>
