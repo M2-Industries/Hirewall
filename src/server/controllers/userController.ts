@@ -115,12 +115,10 @@ const userController: userControllerType = {
           userId = result[0]._id;
         }
         // check if password matches
-        console.log(password, hashedPassword, userId);
         bcrypt.compare(
           password,
           hashedPassword,
           (err: Error, isMatch: boolean) => {
-            console.log(password, hashedPassword, isMatch);
             // if error, return error
             if (err) {
               return next({
