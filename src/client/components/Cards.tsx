@@ -5,7 +5,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-
+import type { ActionType } from '../slice';
 const bull = (
   <Box
     component='span'
@@ -51,12 +51,57 @@ const card = (
 );
 
 export default function Cards() {
+  function setColor(action: ActionType): string {
+    switch (action) {
+      case 'Accepted':
+      case 'Rejected':
+      case 'Declined':
+      case 'No Offer':
+      case 'Withdrawn':
+        return '#E8E8E8';
+      default:
+        return 'white';
+    }
+  }
   const cards: JSX.Element[] = [];
   for (let i = 0; i < 20; i++) {
     cards.push(
       <div id={`{i}`} className='cardDiv'>
-        <Box sx={{ minWidth: 275, maxWidth: '25rem' }}>
-          <Card variant='outlined'>{card}</Card>
+        <Box
+          sx={{
+            minWidth: 275,
+            maxWidth: '25rem',
+          }}
+        >
+          <Card
+            variant='outlined'
+            sx={{
+              borderColor: '#E8E8E8',
+              backgroundColor: setColor('Applied'),
+            }}
+          >
+            {card}
+          </Card>
+        </Box>
+      </div>
+    );
+    cards.push(
+      <div id={`{i}`} className='cardDiv'>
+        <Box
+          sx={{
+            minWidth: 275,
+            maxWidth: '25rem',
+          }}
+        >
+          <Card
+            variant='outlined'
+            sx={{
+              borderColor: '#E8E8E8',
+              backgroundColor: setColor('Rejected'),
+            }}
+          >
+            {card}
+          </Card>
         </Box>
       </div>
     );

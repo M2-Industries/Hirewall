@@ -4,7 +4,7 @@ export type HireWallState = {
   isLoggedIn: boolean;
   userRecord: { _id: number; name: string; email: string }; // mimics the DB structure
   selectedView: 'Card' | 'Table' | 'Graph';
-  selectedFilter: 'All' | 'Active';
+  selectedFilter: 'All' | 'Active' | 'Inactive';
   applicationRecords?: { [key: number]: ApplicationRecord };
   actionRecords?: {
     [key: number]: ActionRecord[];
@@ -105,6 +105,9 @@ const hwSlice = createSlice({
       switch (action.payload) {
         case 'Active':
           state.selectedFilter = 'Active';
+          break;
+        case 'Inactive':
+          state.selectedFilter = 'Inactive';
           break;
         default:
           state.selectedFilter = 'All';
