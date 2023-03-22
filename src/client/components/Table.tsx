@@ -1,12 +1,19 @@
 import * as React from 'react';
-import { Box } from '@mui/material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import type { ApplicationRecord, ActionRecord, ActionType } from '../slice';
+import { useEffect, useState } from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import type {
+  ApplicationRecord,
+  ActionRecord,
+  ActionType,
+  FilterType,
+} from '../slice';
 type propType = {
+  allowList: Set<number>;
   appRecords?: { [key: number]: ApplicationRecord };
   actionRecords?: {
     [key: number]: ActionRecord[];
   };
+  filter: FilterType;
 };
 const SIZE = 10;
 const VISIBLE_FIELDS = [
@@ -76,129 +83,42 @@ const columns: GridColDef[] = [
   },
 ];
 
-// const rows = [
-//   {
-//     id: 1,
-//     Company: 'Amazon',
-//     Location: 'New York, NY',
-//     Title: 'Sr SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 2,
-//     Company: 'Bloomberg',
-//     Location: 'Jersey City, NJ',
-//     Title: 'Sr SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 3,
-//     Company: 'Google',
-//     Location: 'Los Angeles, CA',
-//     Title: 'Jr SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 4,
-//     Company: 'Investopedia',
-//     Location: 'Philadephia, PA',
-//     Title: 'Staff Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 5,
-//     Company: 'HP',
-//     Location: 'Atlanta, GA',
-//     Title: 'Lead SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 6,
-//     Company: 'Apple',
-//     Location: 'Remote',
-//     Title: 'Operations',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 7,
-//     Company: 'Microsoft',
-//     Location: 'Remote',
-//     Title: 'Intern',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 8,
-//     Company: 'Google',
-//     Location: 'Remote',
-//     Title: 'Lead SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-//   {
-//     id: 9,
-//     Company: 'Tesla',
-//     Location: 'Austin, TX',
-//     Title: 'SW Eng',
-//     Salary: '100k - 200k',
-//     Status: 'Active',
-//     lastAction: 'Applied',
-//     Comments: 'Used resume version 4 with Cover Letter',
-//   },
-// ];
-// <Box sx={{ height: SIZE * 2 + 'rem', width: '100%' }}>
-//
 export default function Table(props: propType) {
-  const { appRecords, actionRecords } = props;
-  const rows: rowObject[] = [];
-  for (const key in appRecords) {
-    const {
-      _id,
-      company,
-      location,
-      job_title,
-      salary,
-      comments,
-      last_action_id_fk,
-    } = appRecords[Number(key)];
-    const last_action =
-      actionRecords !== undefined
-        ? actionRecords[_id].at(-1)?.action_type
-        : undefined;
-    const status = getStatus(last_action);
-    rows.push({
-      id: _id,
-      company,
-      location,
-      job_title,
-      salary,
-      status,
-      last_action: last_action !== undefined ? last_action : '',
-      comments,
-    });
-  }
+  const [rows, setRows] = useState<rowObject[]>([]);
+  const { appRecords, actionRecords, filter, allowList } = props;
+  // const rows: rowObject[] = [];
+  useEffect(() => {
+    const newRows: rowObject[] = [];
+    for (const key in appRecords) {
+      const {
+        _id,
+        company,
+        location,
+        job_title,
+        salary,
+        comments,
+        last_action_id_fk,
+      } = appRecords[Number(key)];
+      const last_action =
+        actionRecords !== undefined
+          ? actionRecords[_id].at(-1)?.action_type
+          : undefined;
+      const status = getStatus(last_action);
+      if (filter !== status && filter !== 'All') continue;
+      if (allowList.size > 0 && !allowList.has(Number(key))) continue;
+      newRows.push({
+        id: _id,
+        company,
+        location,
+        job_title,
+        salary,
+        status,
+        last_action: last_action !== undefined ? last_action : '',
+        comments,
+      });
+    }
+    setRows(newRows);
+  }, [filter, allowList]);
   return (
     <div className='table'>
       <DataGrid

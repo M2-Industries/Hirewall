@@ -64,26 +64,7 @@ module.exports = {
       directory: path.join(__dirname, './dist'),
     },
     proxy: {
-      '/checktoken': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/getData': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/assets/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
-      },
-      '/token': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/docs/**': {
+      '/user/**': {
         target: 'http://localhost:3000/',
         secure: false,
         changeOrigin: true,
