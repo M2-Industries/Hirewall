@@ -6,8 +6,8 @@ import SignIn from './containers/SignIn';
 function App() {
   return (
     <div id='mainApp' className='main'>
-      <SignIn />
-      {/* <Display /> */}
+      {/* <SignIn /> */}
+      <Display />
       {/* <Routes>
         <Route path="/Display/*" element={<Display />} />
         <Route path="/" element={<Setup />} />

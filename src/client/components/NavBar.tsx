@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,9 +15,11 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 const Icon = require('../../../public/HWIcon.svg').default;
 import { useSelector, useDispatch } from 'react-redux';
 import type { HireWallState, ApplicationRecord } from '../slice';
-import { setApplicationRecords, setActionRecords } from '../slice';
+import { setIsLoggedIn, setActionRecords } from '../slice';
 
 export default function NavBar() {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
   const isLoggedIn = useSelector((state: HireWallState) => state.isLoggedIn);
   const user = useSelector((state: HireWallState) => state.userRecord);
 
@@ -37,6 +39,10 @@ export default function NavBar() {
   };
 
   const handleMenuClose = () => {
+    if (isLoggedIn) {
+      dispatch(setIsLoggedIn(false));
+    }
+    nav('/signin');
     setAnchorEl(null);
     handleMobileMenuClose();
   };
@@ -115,7 +121,7 @@ export default function NavBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>{user.name === '' ? 'LogIn' : user.name}</p>
+        <p>{!isLoggedIn ? '' : user.email}</p>
       </MenuItem>
     </Menu>
   );

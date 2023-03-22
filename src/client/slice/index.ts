@@ -260,7 +260,7 @@ const hwSlice = createSlice({
         } = record; // assumes that the structure is in the DB
         results = {
           ...results,
-          _id: {
+          [_id]: {
             _id,
             company,
             location,
