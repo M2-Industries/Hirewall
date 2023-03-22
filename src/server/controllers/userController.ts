@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import connection from '../models/dbmodel';
 
 type userControllerType = {
+  checkUsers: (req: Request, res: Response, next: NextFunction) => void;
   validateNewUser: (req: Request, res: Response, next: NextFunction) => void;
   createNewUser: (req: Request, res: Response, next: NextFunction) => void;
   authenticateUser: (req: Request, res: Response, next: NextFunction) => void;
@@ -10,6 +11,19 @@ type userControllerType = {
 
 const SALT_WORK_FACTOR: number = 15;
 const userController: userControllerType = {
+  checkUsers(req, res, next) {
+    console.log('entered checkUsers')
+    connection.query(
+      'SELECT * FROM users',
+      (err: any, result: any, fields: any) => {
+        res.locals.allUsers = result;
+        return next();
+      }
+    );
+
+    console.log('query in checkUsers');
+  },
+  
   validateNewUser(req, res, next) {
     if (req.body.email === undefined || req.body.password === undefined) {
       // if missing email or password, return error

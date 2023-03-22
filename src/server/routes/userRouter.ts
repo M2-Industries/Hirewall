@@ -4,21 +4,13 @@ const userController = require('../controllers/userController');
 const cookieController = require('../controllers/cookieController');
 // import action controller when it's done
 
-// // get all users (mainly for devs for testing purposes)
-// userRouter.get('/',
-//   // invoke the middleware function for getting all actions
-//   (req: Request, res: Response) => {
-//     return res.status(200).json(res.locals.allActions)
-//   }
-// )
-
-// // get a specific user
-// userRouter.get('/:id',
-//   // invoke the middleware function for getting all actions
-//   (req: Request, res: Response) => {
-//     return res.status(200).json(res.locals.allActions)
-//   }
-// )
+// get all users (mainly for devs for testing purposes)
+userRouter.get('/',
+  userController.checkUsers,
+  (req: Request, res: Response) => {
+    return res.status(200).json(res.locals.allUsers)
+  }
+)
 
 // Create a new account
 userRouter.post(

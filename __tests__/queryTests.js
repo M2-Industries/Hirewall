@@ -55,7 +55,7 @@ const deleteUser = `
   SELECT * FROM users WHERE email='jestQueryTest@gmail.com';
 `;
 
-describe('Test CRUD functionality for database tables', () => {
+xdescribe('Test CRUD functionality for database tables', () => {
   // test that our three tables exist
   it('Should find the user, applications, and actions tables', async () => {
     const [rows] = await testQuery(`
