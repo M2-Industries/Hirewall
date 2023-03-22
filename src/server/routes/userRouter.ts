@@ -2,15 +2,6 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 const userRouter = express.Router();
 const userController = require('../controllers/userController');
 const cookieController = require('../controllers/cookieController');
-// import action controller when it's done
-
-// get all users (mainly for devs for testing purposes)
-userRouter.get('/',
-  userController.checkUsers,
-  (req: Request, res: Response) => {
-    return res.status(200).json(res.locals.allUsers)
-  }
-)
 
 // Create a new account
 userRouter.post(
