@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import NavBar from '../components/NavBar';
+import { Route, Routes } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import Table from '../components/Table';
 import Cards from '../components/Cards';
@@ -67,11 +68,20 @@ function Display() {
         <FilterButton />
         <ViewButton />
       </div>
-      {view === 'Table' ? (
-        <Table appRecords={appRecords} actionRecords={actionRecords} />
-      ) : (
-        <Cards appRecords={appRecords} actionRecords={actionRecords} />
-      )}
+      <Routes>
+        <Route
+          path="/table"
+          element={
+            <Table appRecords={appRecords} actionRecords={actionRecords} />
+          }
+        />
+        <Route
+          path="/card"
+          element={
+            <Cards appRecords={appRecords} actionRecords={actionRecords} />
+          }
+        />
+      </Routes>
     </div>
   );
 }
