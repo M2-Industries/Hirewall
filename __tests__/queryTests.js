@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const { create } = require('ts-node');
 
 // testing function that takes in an SQL query string
 const testQuery = async query => {
@@ -12,6 +13,7 @@ const testQuery = async query => {
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
+    multipleStatements: true,
   });
   
   try {
@@ -37,19 +39,22 @@ const showTables = `
 `;
 
 const createUser = `
-  INSERT INTO users (email, password) VALUES ('evan@gmail.com', 'mypassword');
+  INSERT INTO users (email, password) VALUES ('jestQueryTest@gmail.com', 'jestquerytest');
+  SELECT * FROM users WHERE email='jestQueryTest@gmail.com';
 `;
   
-const checkUsers = `
-  SELECT * FROM users;  
+const deleteUser = `
+  INSERT INTO users (email, password) VALUES ('shouldBeDeleted@gmail.com', 'shouldbedeleted');
+  DELETE FROM users WHERE email='shouldBeDeleted@gmail.com';
+  SELECT * FROM users WHERE email='jestQueryTest@gmail.com';
 `;
 
 // test that our three tables exist
 it('Should find the user, applications, and actions tables', async () => {
   const [rows] = await testQuery(`
-    ${showTables} 
+    ${showTables}
   `)
-  
+
   expect(rows[0].Tables_in_mydb).toBe('actions');
   expect(rows[1].Tables_in_mydb).toBe('applications');
   expect(rows[2].Tables_in_mydb).toBe('users');
@@ -57,16 +62,18 @@ it('Should find the user, applications, and actions tables', async () => {
 
 // test that we can create a user
 it('Should create a new user in users', async () => {
-  const [resultSetHeader] = await testQuery(`
+  const [rows] = await testQuery(`
     ${createUser}
   `)
+
+  expect(rows[1][0]).toBeTruthy();
 })
 
-// test that we can access all the users
-it('Should be able to access the users in the users table', async () => {
+// test that we can delete a user
+it('Should be able to delete a user in the users table', async () => {
   const [rows] = await testQuery(`
-    ${checkUsers}
+    ${deleteUser}
   `)
   
-  console.log(rows);
+  expect(rows[1][0]).not.toBeTruthy();
 })
