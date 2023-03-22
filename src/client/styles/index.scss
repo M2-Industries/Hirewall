@@ -1,0 +1,63 @@
+.icon {
+  width: 4rem;
+  margin-right: 1rem;
+}
+
+.searchContainer {
+  margin-top: 1rem;
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+
+.searchBar {
+  :hover {
+    border-radius: 0.5rem;
+    border: solid;
+    border-width: 0.1rem;
+    border-color: gray;
+  }
+  :focus {
+    border-radius: 0.5rem;
+    border: solid;
+    border-width: 0.1rem;
+    border-color: gray;
+  }
+}
+
+.filterButton {
+  display: flex;
+  justify-content: center;
+}
+
+.selectorButtons {
+  display: flex;
+  direction: row;
+  justify-content: center;
+}
+
+.table {
+  height: 75vh;
+}
+
+.topCard {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bodyCard {
+  display: flex;
+  direction: column;
+  justify-content: center;
+}
+
+.cardDiv {
+  margin: 0.25rem;
+}
+
+.cardSection {
+  display: flex;
+  direction: rows;
+  justify-content: center;
+  flex-wrap: wrap;
+}
