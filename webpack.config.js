@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: './src/client/index.tsx',
@@ -15,7 +17,7 @@ module.exports = {
         use: [
           {
             loader: 'ts-loader',
-          }
+          },
         ],
       },
       {
@@ -35,6 +37,17 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-url-loader',
+            options: {
+              limit: 10000,
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: { extensions: ['*', '.js', '.jsx', '.tsx', '.ts'] },
@@ -43,6 +56,7 @@ module.exports = {
       template: './src/client/index.html',
       // filename: './index.html',
     }),
+    new FaviconsWebpackPlugin('public/Icon.svg'),
   ],
   devServer: {
     headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000/' },
@@ -50,26 +64,7 @@ module.exports = {
       directory: path.join(__dirname, './dist'),
     },
     proxy: {
-      '/checktoken': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/getData': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/assets/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
-      },
-      '/token': {
-        target: 'http://localhost:3000/',
-        secure: false,
-        changeOrigin: true,
-      },
-      '/docs/**': {
+      '/user/**': {
         target: 'http://localhost:3000/',
         secure: false,
         changeOrigin: true,
