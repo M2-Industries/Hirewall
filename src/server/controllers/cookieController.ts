@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 import { Request, Response, NextFunction } from 'express';
-const Dotenv = require('dotenv');
+require('dotenv').config();
 const secret = process.env.JWT_SECRET;
+const expiresIn: number = 7 * 60 * 60 * 24;
 
 type cookieControllerType = {
   setCookie: (req: Request, res: Response, next: NextFunction) => void;
@@ -11,11 +12,10 @@ type cookieControllerType = {
 
 const cookieController: cookieControllerType = {
   // set session cookie with JWT
-  setCookie(req, res, next) {
+  setCookie(req: Request, res: Response, next: NextFunction) {
     try {
       const { _id } = res.locals;
-      // const sessionToken = jwt.sign({ _id }, secret);
-      const sessionToken = jwt.sign({ _id }, 'secret');
+      const sessionToken = jwt.sign({ _id }, secret, { expiresIn });
       res.cookie('sessionToken', sessionToken, { httpOnly: true });
       return next();
     } catch (err: any) {
@@ -25,7 +25,7 @@ const cookieController: cookieControllerType = {
   },
 
   // verify JWT from session cookie
-  verifyCookie(req, res, next) {
+  verifyCookie(req: Request, res: Response, next: NextFunction) {
     // Check if session token exists
     if (!req.cookies.sessionToken) {
       return next({
@@ -36,29 +36,25 @@ const cookieController: cookieControllerType = {
     }
     // Decode token
     const { sessionToken } = req.cookies;
-    jwt.verify(
-      sessionToken,
-      process.env.JWT_SECRET,
-      (err: Error, decoded: { _id: number }) => {
-        // if verification fails, return error
-        if (err) {
-          return next({
-            log: 'Error in cookieController.verifyCookie (failed to verify token)',
-            status: 401,
-            message: { err: 'User is not authenticated.' },
-          });
-        }
-        // if verification succeeds, add ID to res.locals and continue
-        else {
-          res.locals._id = decoded._id;
-          return next();
-        }
+    jwt.verify(sessionToken, secret, (err: Error, decoded: { _id: number }) => {
+      // if verification fails, return error
+      if (err) {
+        return next({
+          log: 'Error in cookieController.verifyCookie (failed to verify token)',
+          status: 401,
+          message: { err: 'User is not authenticated.' },
+        });
       }
-    );
+      // if verification succeeds, add ID to res.locals and continue
+      else {
+        res.locals._id = decoded._id;
+        return next();
+      }
+    });
   },
 
   // Clear JWT session cookie
-  removeCookie(req, res, next) {
+  removeCookie(req: Request, res: Response, next: NextFunction) {
     res.clearCookie('sessionToken');
     return next();
   },
