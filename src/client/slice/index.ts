@@ -246,7 +246,10 @@ const hwSlice = createSlice({
     },
     setApplicationRecords: (state, action) => {
       let results = {};
-      console.log(action.payload);
+      if (action.payload.length === 0) {
+        console.error(`setApplicationRecords: payload empty ${action.payload}`);
+        return;
+      }
       for (const record of action.payload) {
         // assumes the payload is an array of records.
         const {
@@ -289,6 +292,10 @@ const hwSlice = createSlice({
     },
     setActionRecords: (state, action) => {
       let results: { [key: number]: ActionRecord[] } = {};
+      if (action.payload.length === 0) {
+        console.error(`setActionRecords: payload empty ${action.payload}`);
+        return;
+      }
       for (const record of action.payload) {
         // assumes the paylod is an array of action records.
         const { _id, date, actionType, notes, application_id_fk } = record; // assumes that the structure is in the DB
