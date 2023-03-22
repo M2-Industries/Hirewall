@@ -13,20 +13,22 @@ export type HireWallState = {
 
 export type ApplicationRecord = {
   _id: number;
-  Company: string;
-  Location: string;
-  JobTitle: string;
-  Salary: number[]; // will need to parse to a number assume USD
-  Comments: string;
-  lastActionId: number | null; // points to ActionRecords[_id].[lastActionId]
+  user_id?: number;
+  company: string;
+  location: string;
+  job_title: string;
+  salary: string; //number[]; // will need to parse to a number assume USD
+  comments: string;
+  last_action_id_fk: number | null; // points to ActionRecords[_id].[lastActionId]
 };
 
 export type ActionRecord = {
   _id: number;
   date: string;
-  actionType: ActionType;
+  action_type: ActionType;
   // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
   notes: string;
+  application_id_fk?: number;
 };
 export type ActionType =
   | 'Applied'
@@ -51,12 +53,30 @@ const initialState: HireWallState = {
   applicationRecords: [
     {
       _id: 0,
-      Company: 'M2-Industries',
-      Location: 'New York, NY',
-      JobTitle: 'Sr. Software Engineer',
-      Salary: [90000, 220000], // will need to parse to a number assume USD
-      Comments: 'Some String',
-      lastActionId: 1, // points to ActionRecords[_id].[lastActionId]
+      company: 'M2-Industries',
+      location: 'New York, NY',
+      job_title: 'Sr. Software Engineer',
+      salary: '$200,000', //[90000, 220000], // will need to parse to a number assume USD
+      comments: 'Some String',
+      last_action_id_fk: 1, // points to ActionRecords[_id].[lastActionId]
+    },
+    {
+      _id: 1,
+      company: 'Amazon',
+      location: 'New York, NY',
+      job_title: 'Sr. Software Engineer',
+      salary: '$250,000', //[90000, 220000], // will need to parse to a number assume USD
+      comments: 'Used resume version 4 with Cover Letter',
+      last_action_id_fk: 1, // points to ActionRecords[_id].[lastActionId]
+    },
+    {
+      _id: 2,
+      company: 'Bloomberg',
+      location: 'Jersey City, NJ',
+      job_title: 'Software Engineer',
+      salary: '$350,000', //[90000, 220000], // will need to parse to a number assume USD
+      comments: 'Used resume version 5 with Cover Letter',
+      last_action_id_fk: 3, // points to ActionRecords[_id].[lastActionId]
     },
   ],
   actionRecords: {
@@ -65,14 +85,44 @@ const initialState: HireWallState = {
       {
         _id: 0,
         date: '12/22/21',
-        actionType: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'applied today hoping for the best!',
       },
       {
         _id: 1,
         date: '12/23/21',
-        actionType: 'Sent Follow Up', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        action_type: 'Sent Follow Up', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
         notes: 'Checked in with Evelyn, sent her peaches.',
+      },
+    ],
+    1: [
+      // maps to applicationRecord element in the table by id
+      {
+        _id: 2,
+        date: '3/22/21',
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 3,
+        date: '4/23/23',
+        action_type: 'Rejected', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
+      },
+    ],
+    2: [
+      // maps to applicationRecord element in the table by id
+      {
+        _id: 4,
+        date: '3/22/21',
+        action_type: 'Applied', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'applied today hoping for the best!',
+      },
+      {
+        _id: 5,
+        date: '4/23/23',
+        action_type: 'Interview', // can be Applied -> [Rejected, Sent Follow Up -> [No Response, Interview, Rejected], Interview -> [Interview, Offer -> [Accepted, Declined], No Offer, Withdrawn]
+        notes: 'They wanted 100 years experience',
       },
     ],
   },
@@ -119,23 +169,24 @@ const hwSlice = createSlice({
         // assumes the payload is an array of records.
         const {
           _id,
-          Company,
-          Location,
-          JobTitle,
-          Salary,
-          Comments,
-          lastActionId,
+          user_id,
+          company,
+          location,
+          job_title,
+          salary,
+          comments,
+          last_action_id_fk,
         } = record; // assumes that the structure is in the DB
         results = {
           ...results,
           _id: {
             _id,
-            Company,
-            Location,
-            JobTitle,
-            Salary,
-            Comments,
-            lastActionId,
+            company,
+            location,
+            job_title,
+            salary,
+            comments,
+            last_action_id_fk,
           },
         };
       }
@@ -162,7 +213,7 @@ const hwSlice = createSlice({
         const newObj = {
           _id: Number(_id),
           date: String(date),
-          actionType: parseActionType(actionType),
+          action_type: parseActionType(actionType),
           notes: String(notes),
         };
 
@@ -179,7 +230,7 @@ const hwSlice = createSlice({
             state.applicationRecords !== undefined &&
             app_id in state.applicationRecords
           ) {
-            state.applicationRecords[app_id].lastActionId = _id;
+            state.applicationRecords[app_id].last_action_id_fk = _id;
           }
         }
       }
@@ -198,7 +249,7 @@ const hwSlice = createSlice({
           state.applicationRecords !== undefined &&
           app_id in state.applicationRecords
         ) {
-          state.applicationRecords[app_id].lastActionId = null; //signify the link is brokern
+          state.applicationRecords[app_id].last_action_id_fk = null; //signify the link is brokern
         }
       }
     },
@@ -225,7 +276,7 @@ const hwSlice = createSlice({
           state.applicationRecords !== undefined &&
           app_id in state.applicationRecords
         ) {
-          state.applicationRecords[app_id].lastActionId = action_id;
+          state.applicationRecords[app_id].last_action_id_fk = action_id;
         }
       }
     },
