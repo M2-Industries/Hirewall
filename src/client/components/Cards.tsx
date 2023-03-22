@@ -18,31 +18,48 @@ const bull = (
 const card = (
   <React.Fragment>
     <CardContent>
-      <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
-        Word of the Day
-      </Typography>
-      <Typography variant='h5' component='div'>
-        be{bull}nev{bull}o{bull}lent
-      </Typography>
-      <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-        adjective
-      </Typography>
-      <Typography variant='body2'>
-        well meaning and kindly.
-        <br />
-        {'"a benevolent smile"'}
-      </Typography>
+      <div className='topCard'>
+        <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
+          Active {/*status*/}
+        </Typography>
+        <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
+          Applied {/*lastAction*/}
+        </Typography>
+      </div>
+      <div className='bodyCard'>
+        <Typography variant='h5' component='div'>
+          Company {/*Company*/}
+        </Typography>
+      </div>
+      <div className='bodyCard'>
+        <Typography sx={{ mb: 1.5 }} color='text.secondary'>
+          Title {/*jobTitle*/}
+        </Typography>
+      </div>
+      <div className='bodyCard'>
+        <Typography variant='body2'>
+          Salary Range {/*salaryRange*/}
+          <br />
+          {'"comments..."'} {/**/}
+        </Typography>
+      </div>
     </CardContent>
-    <CardActions>
-      <Button size='small'>Learn More</Button>
+    <CardActions className='bodyCard'>
+      <Button size='small'>More Details</Button>
     </CardActions>
   </React.Fragment>
 );
 
 export default function Cards() {
-  return (
-    <Box sx={{ minWidth: 275 }}>
-      <Card variant='outlined'>{card}</Card>
-    </Box>
-  );
+  const cards: JSX.Element[] = [];
+  for (let i = 0; i < 20; i++) {
+    cards.push(
+      <div id={`{i}`} className='cardDiv'>
+        <Box sx={{ minWidth: 275, maxWidth: '25rem' }}>
+          <Card variant='outlined'>{card}</Card>
+        </Box>
+      </div>
+    );
+  }
+  return <div className='cardSection'> {cards} </div>;
 }
