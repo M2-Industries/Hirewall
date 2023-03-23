@@ -7,15 +7,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import type { ActionType, FilterType } from '../slice';
-import type { ApplicationRecord, ActionRecord } from '../slice';
-type propType = {
-  allowList: Set<number>;
-  appRecords?: { [key: number]: ApplicationRecord };
-  actionRecords?: {
-    [key: number]: ActionRecord[];
-  };
-  filter: FilterType;
-};
+import { propType } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 type cardText = {
   _id: number;
@@ -43,43 +36,58 @@ function getStatus(action?: ActionType): 'Inactive' | 'Unknown' | 'Active' {
   }
 }
 
-const card = (text: cardText) => (
-  <React.Fragment>
-    <CardContent>
-      <div className='topCard'>
-        <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
-          {text.status}
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
-          {text.last_action}
-        </Typography>
-      </div>
-      <div className='bodyCard'>
-        <Typography variant='h5' component='div'>
-          {text.company}
-        </Typography>
-      </div>
-      <div className='bodyCard'>
-        <Typography sx={{ mb: 1.5 }} color='text.secondary'>
-          {text.job_title}
-        </Typography>
-      </div>
-      <div className='bodyCard'>
-        <Typography variant='body2'>{text.salary}</Typography>
-      </div>
-      <div className='bodyCard'>
-        <Typography variant='body2'>{text.comments}</Typography>
-      </div>
-    </CardContent>
-    <CardActions className='bodyCard'>
-      <Button size='small'>More Details</Button>
-    </CardActions>
-  </React.Fragment>
-);
-
 export default function Cards(props: propType) {
   const [cards, setCards] = useState<JSX.Element[]>([]);
   const { appRecords, actionRecords, filter, allowList } = props;
+  const navigate = useNavigate();
+  const card = (text: cardText) => {
+    return (
+      <React.Fragment>
+        <CardContent>
+          <div className="topCard">
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {text.status}
+            </Typography>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {text.last_action}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="h5" component="div">
+              {text.company}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {text.job_title}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="body2">{text.salary}</Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="body2">{text.comments}</Typography>
+          </div>
+        </CardContent>
+        <CardActions className="bodyCard">
+          <Button
+            size="small"
+            onClick={() => navigate(`/dashboard/actions/${text._id}`)}
+          >
+            More Details
+          </Button>
+        </CardActions>
+      </React.Fragment>
+    );
+  };
   function setColor(action?: ActionType): string {
     switch (action) {
       case 'Accepted':
@@ -113,7 +121,7 @@ export default function Cards(props: propType) {
       if (filter !== status && filter !== 'All') continue;
       if (allowList.size > 0 && !allowList.has(Number(key))) continue;
       newCards.push(
-        <div key={String(_id)} id={String(_id)} className='cardDiv'>
+        <div key={String(_id)} id={String(_id)} className="cardDiv">
           <Box
             sx={{
               minWidth: 275,
@@ -121,7 +129,7 @@ export default function Cards(props: propType) {
             }}
           >
             <Card
-              variant='outlined'
+              variant="outlined"
               sx={{
                 borderColor: '#E8E8E8',
                 backgroundColor: setColor(last_action),
@@ -145,5 +153,5 @@ export default function Cards(props: propType) {
     setCards(newCards);
   }, [filter, allowList]);
 
-  return <div className='cardSection'> {cards} </div>;
+  return <div className="cardSection"> {cards} </div>;
 }

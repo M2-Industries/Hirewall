@@ -28,7 +28,7 @@ export default function SignIn() {
     }).then((response) => {
       console.log(response.status);
       if (response.status === 202) {
-        navigate('/dashboard');
+        navigate('/dashboard/card');
       }
     });
   };
@@ -36,7 +36,7 @@ export default function SignIn() {
   return (
     <div>
       <NavBar />
-      <Container maxWidth='xs'>
+      <Container maxWidth="xs">
         <Box
           sx={{
             mt: 8,
@@ -45,39 +45,39 @@ export default function SignIn() {
             alignItems: 'center',
           }}
         >
-          <Typography component='h1' variant='h4' sx={{ mb: 3 }}>
+          <Typography component="h1" variant="h4" sx={{ mb: 3 }}>
             Sign In{' '}
           </Typography>
-          <Box component='form' onSubmit={handleSubmit} noValidate>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
-              variant='standard'
-              margin='dense'
+              variant="standard"
+              margin="dense"
               required
               fullWidth
-              id='email'
-              label='Email'
-              name='email'
-              type='text'
+              id="email"
+              label="Email"
+              name="email"
+              type="text"
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 dispatch(setUserRecord(e.target.value))
               }
               autoFocus
             />
             <TextField
-              variant='standard'
-              margin='dense'
+              variant="standard"
+              margin="dense"
               required
               fullWidth
-              id='password'
-              label='Password'
-              name='password'
-              type='password'
+              id="password"
+              label="Password"
+              name="password"
+              type="password"
             />
-            <Button type='submit' variant='contained' sx={{ mt: 4, mb: 4 }}>
+            <Button type="submit" variant="contained" sx={{ mt: 4, mb: 4 }}>
               Sign In
             </Button>
           </Box>
-          <Link to='/signup'>{'New to Hirewall? Create an account'}</Link>
+          <Link to="/signup">{'New to Hirewall? Create an account'}</Link>
         </Box>
       </Container>
     </div>

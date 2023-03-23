@@ -1,20 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import type {
-  ApplicationRecord,
-  ActionRecord,
-  ActionType,
-  FilterType,
-} from '../slice';
-type propType = {
-  allowList: Set<number>;
-  appRecords?: { [key: number]: ApplicationRecord };
-  actionRecords?: {
-    [key: number]: ActionRecord[];
-  };
-  filter: FilterType;
-};
+import { propType } from '../App';
+import type { ActionType } from '../slice';
+
 const SIZE = 10;
 const VISIBLE_FIELDS = [
   'Company',
@@ -120,7 +109,7 @@ export default function Table(props: propType) {
     setRows(newRows);
   }, [filter, allowList]);
   return (
-    <div className='table'>
+    <div className="table">
       <DataGrid
         rows={rows}
         columns={columns}
