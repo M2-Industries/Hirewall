@@ -73,8 +73,8 @@ applicationController.getApplications = async (
   res: Response,
   next: NextFunction
 ) => {
-  const userId = req.params.user_id;
-
+  //   const userId = req.params.user_id;
+  const userId = res.locals._id;
   try {
     const result: any = await query(
       `SELECT _id, company, location, job_title, salary, last_action_id_fk, comments FROM applications WHERE user_id = ${userId};`

@@ -62,3 +62,15 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+.center {
+  display: flex;
+  direction: column;
+  justify-content: center;
+}
+
+.signIn {
+  display: flex;
+  direction: column;
+  justify-content: center;
+}

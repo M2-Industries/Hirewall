@@ -62,19 +62,18 @@ function App() {
       setAllowList(new Set(ids));
     }
   }, [searchTerm]);
-
   useEffect(() => {
     //insert fetch request to back end for app records
     // Assume that the user record has been setup by the LOGIN Page
 
     // need to POST with user_id
     fetch('/application', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user_id: user._id }), //search by user id
+      // body: JSON.stringify({ user_id: user._id }), //search by user id
     })
       .then((res) => res.json())
       .then((data) => {
@@ -86,13 +85,13 @@ function App() {
           if (cache.has(data._id)) continue;
           cache.add(data._id);
           //insert fetch request to back end for app records
-          fetch('/action', {
-            method: 'POST',
+          fetch(`/action/${record._id}`, {
+            method: 'GET',
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ application_id: data._id }), //search by app id
+            // body: JSON.stringify({ application_id: data._id }), //search by app id
           })
             .then((res) => res.json())
             .then((data) => {
