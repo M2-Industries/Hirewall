@@ -11,8 +11,9 @@ import {
   GridRowParams,
   GridActionsCellItem,
   GridRowModel,
+  GridRowsProp,
 } from '@mui/x-data-grid';
-import { IconButton, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -20,14 +21,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const SIZE = 10;
-
-interface Row {
-  id: number;
-  Date: string;
-  Action: string;
-  Notes?: string;
-}
-const defaultRows = [
+const defaultRows: GridRowsProp = [
   {
     id: 1,
     Date: '2/4/22',
@@ -66,20 +60,18 @@ const defaultRows = [
   },
 ];
 
-// <Box sx={{ height: SIZE * 2 + 'rem', width: '100%' }}>
-//
 export default function Actions() {
   const [rows, setRows] = useState(defaultRows);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [editedRow, setEditedRow] = useState(null);
-  //<Row | null>
+
+  //prevent default edit features
   const handleRowEditStart = (
     params: GridRowParams,
     event: MuiEvent<React.SyntheticEvent>
   ) => {
     event.defaultMuiPrevented = true;
   };
-
+  //prevent default edit features
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
     event
@@ -95,25 +87,20 @@ export default function Actions() {
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
-    if (rowModesModel[id]?.mode === GridRowModes.Edit) {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow!.isNew) {
       setRows(rows.filter((row) => row.id !== id));
-      setRowModesModel((oldModel) => {
-        const { [id]: _, ...rest } = oldModel;
-        return rest;
-      });
-    } else {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
     }
+    // }
   };
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = {
-      id: newRow.id,
-      Date: newRow.Date || '',
-      Action: newRow.Action || '',
-      Notes: newRow.Notes || '',
+      ...newRow,
+      isNew: false,
     };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return newRow;
@@ -125,6 +112,7 @@ export default function Actions() {
       Date: '',
       Action: '',
       Notes: '',
+      isNew: true,
     };
     setRows((oldRows) => [...oldRows, newRow]);
 
@@ -143,6 +131,11 @@ export default function Actions() {
       headerName: 'Date',
       width: 150,
       editable: true,
+      // valueGetter: (params: GridValueGetterParams) => {
+      //   const { value } = params;
+      //   const date = new Date(value);
+      //   return isNaN(date.getTime()) ? '' : date.toLocaleDateString();
+      // },
     },
     {
       field: 'Action',
@@ -153,14 +146,14 @@ export default function Actions() {
     {
       field: 'Notes',
       headerName: 'Notes',
-      width: 400,
+      width: 250,
       editable: true,
     },
     {
       field: 'Edit',
       type: 'actions',
       headerName: 'Edit',
-      width: 150,
+      width: 100,
       getActions: ({ id }: any) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -220,6 +213,7 @@ export default function Actions() {
             },
           },
         }}
+        editMode="row"
         rowModesModel={rowModesModel}
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
