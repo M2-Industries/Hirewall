@@ -7,16 +7,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import type { ActionType, FilterType } from '../slice';
-import type { ApplicationRecord, ActionRecord } from '../slice';
+import { propType } from '../App';
 import { useNavigate } from 'react-router-dom';
-type propType = {
-  allowList: Set<number>;
-  appRecords?: { [key: number]: ApplicationRecord };
-  actionRecords?: {
-    [key: number]: ActionRecord[];
-  };
-  filter: FilterType;
-};
 
 type cardText = {
   _id: number;
@@ -43,49 +35,59 @@ function getStatus(action?: ActionType): 'Inactive' | 'Unknown' | 'Active' {
       return 'Active';
   }
 }
-const handleClick = () => {
-  const navigate = useNavigate();
-  navigate(`/dashboard/details`);
-};
-const card = (text: cardText) => (
-  <React.Fragment>
-    <CardContent>
-      <div className="topCard">
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {text.status}
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {text.last_action}
-        </Typography>
-      </div>
-      <div className="bodyCard">
-        <Typography variant="h5" component="div">
-          {text.company}
-        </Typography>
-      </div>
-      <div className="bodyCard">
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          {text.job_title}
-        </Typography>
-      </div>
-      <div className="bodyCard">
-        <Typography variant="body2">{text.salary}</Typography>
-      </div>
-      <div className="bodyCard">
-        <Typography variant="body2">{text.comments}</Typography>
-      </div>
-    </CardContent>
-    <CardActions className="bodyCard">
-      <Button size="small" onClick={() => handleClick()}>
-        More Details
-      </Button>
-    </CardActions>
-  </React.Fragment>
-);
 
 export default function Cards(props: propType) {
   const [cards, setCards] = useState<JSX.Element[]>([]);
   const { appRecords, actionRecords, filter, allowList } = props;
+  const navigate = useNavigate();
+  const card = (text: cardText) => {
+    return (
+      <React.Fragment>
+        <CardContent>
+          <div className="topCard">
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {text.status}
+            </Typography>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {text.last_action}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="h5" component="div">
+              {text.company}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              {text.job_title}
+            </Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="body2">{text.salary}</Typography>
+          </div>
+          <div className="bodyCard">
+            <Typography variant="body2">{text.comments}</Typography>
+          </div>
+        </CardContent>
+        <CardActions className="bodyCard">
+          <Button
+            size="small"
+            onClick={() => navigate(`/dashboard/actions/${text._id}`)}
+          >
+            More Details
+          </Button>
+        </CardActions>
+      </React.Fragment>
+    );
+  };
   function setColor(action?: ActionType): string {
     switch (action) {
       case 'Accepted':

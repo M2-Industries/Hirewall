@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
-import type {
-  ActionType,
-  ApplicationRecord,
-  ActionRecord,
-  FilterType,
-} from '../slice';
-type propType = {
-  allowList: Set<number>;
-  appRecords?: { [key: number]: ApplicationRecord };
-  actionRecords?: {
-    [key: number]: ActionRecord[];
-  };
-  filter: FilterType;
-};
+import { propType } from '../App';
+import type { ActionType } from '../slice';
 
 type dataEntry = [
   x: ActionType | 'From',
@@ -72,9 +60,9 @@ export default function Graph(props: propType) {
 
   return (
     <Chart
-      chartType='Sankey'
-      width='100%'
-      height='500px'
+      chartType="Sankey"
+      width="100%"
+      height="500px"
       data={data}
       options={options}
     />

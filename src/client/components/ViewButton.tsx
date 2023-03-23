@@ -13,6 +13,15 @@ export default function ViewButton() {
   const view = useSelector((state: HireWallState) => state.selectedView);
   function handleButtonClick(e: MouseEvent<HTMLElement>) {
     e.preventDefault();
+    navigate(
+      view === 'Card'
+        ? '/dashboard/table'
+        : view === 'Table'
+        ? '/dashboard/graph'
+        : view === 'Graph'
+        ? '/dashboard/card'
+        : '/dashboard/card'
+    );
     dispatch(
       setSelectedView(
         view === 'Card' ? 'Table' : view === 'Table' ? 'Graph' : 'Card'
