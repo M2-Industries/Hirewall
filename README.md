@@ -5,7 +5,7 @@ An app that allows users to track their job application stats and visualize it i
 ## Instructions to run
 
 ```
-git clone https://github.com/Endurtek/alchemeal.git
+git clone https://github.com/M2-Industries/Hirewall.git
 npm install
 npm run dev
 ```
